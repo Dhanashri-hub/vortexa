@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "MediVault — Patient Health Vault"
+version = "1.0.0"
+id = "artifacts/health-vault"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25328
+
+[services.development]
+run = "pnpm --filter @workspace/health-vault run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/health-vault", "run", "build" ]
+publicDir = "artifacts/health-vault/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25328"
+BASE_PATH = "/"

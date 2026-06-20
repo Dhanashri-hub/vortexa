@@ -1,0 +1,804 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: MediVault Patient Digital Health Vault API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: patients
+    description: Patient profile operations
+  - name: records
+    description: Encrypted health record operations
+  - name: prescriptions
+    description: Prescription management
+  - name: access-grants
+    description: Cryptographic access grant operations
+  - name: alerts
+    description: AI-generated safety and fraud alerts
+  - name: ai
+    description: AI agent endpoints
+
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /patient:
+    get:
+      operationId: getPatient
+      tags: [patients]
+      summary: Get patient profile
+      responses:
+        "200":
+          description: Patient profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Patient"
+    patch:
+      operationId: updatePatient
+      tags: [patients]
+      summary: Update patient profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatientUpdate"
+      responses:
+        "200":
+          description: Updated patient
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Patient"
+
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [patients]
+      summary: Get dashboard summary stats
+      responses:
+        "200":
+          description: Summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /records:
+    get:
+      operationId: listRecords
+      tags: [records]
+      summary: List all health records
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HealthRecord"
+    post:
+      operationId: createRecord
+      tags: [records]
+      summary: Create a new health record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HealthRecordInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthRecord"
+
+  /records/{id}:
+    get:
+      operationId: getRecord
+      tags: [records]
+      summary: Get a single health record
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Health record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthRecord"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateRecord
+      tags: [records]
+      summary: Update a health record
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HealthRecordUpdate"
+      responses:
+        "200":
+          description: Updated record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthRecord"
+    delete:
+      operationId: deleteRecord
+      tags: [records]
+      summary: Delete a health record
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /records/{id}/verify:
+    get:
+      operationId: verifyRecord
+      tags: [records]
+      summary: Verify cryptographic signature of a record
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Verification result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignatureVerification"
+
+  /prescriptions:
+    get:
+      operationId: listPrescriptions
+      tags: [prescriptions]
+      summary: List all prescriptions
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of prescriptions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Prescription"
+    post:
+      operationId: createPrescription
+      tags: [prescriptions]
+      summary: Add a new prescription
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PrescriptionInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Prescription"
+
+  /prescriptions/{id}:
+    get:
+      operationId: getPrescription
+      tags: [prescriptions]
+      summary: Get a single prescription
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Prescription
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Prescription"
+    patch:
+      operationId: updatePrescription
+      tags: [prescriptions]
+      summary: Update a prescription
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PrescriptionUpdate"
+      responses:
+        "200":
+          description: Updated prescription
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Prescription"
+    delete:
+      operationId: deletePrescription
+      tags: [prescriptions]
+      summary: Delete a prescription
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /access-grants:
+    get:
+      operationId: listAccessGrants
+      tags: [access-grants]
+      summary: List all access grants
+      responses:
+        "200":
+          description: List of access grants
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AccessGrant"
+    post:
+      operationId: createAccessGrant
+      tags: [access-grants]
+      summary: Grant a provider access to records
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccessGrantInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccessGrant"
+
+  /access-grants/{id}:
+    delete:
+      operationId: revokeAccessGrant
+      tags: [access-grants]
+      summary: Revoke an access grant
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Revoked
+
+  /access-grants/{id}/audit:
+    get:
+      operationId: getAccessGrantAudit
+      tags: [access-grants]
+      summary: Get audit log for an access grant
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Audit entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AuditEntry"
+
+  /alerts:
+    get:
+      operationId: listAlerts
+      tags: [alerts]
+      summary: List all AI-generated alerts
+      parameters:
+        - name: type
+          in: query
+          schema:
+            type: string
+        - name: severity
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of alerts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Alert"
+
+  /alerts/{id}/dismiss:
+    patch:
+      operationId: dismissAlert
+      tags: [alerts]
+      summary: Dismiss an alert
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Dismissed alert
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Alert"
+
+  /ai/analyze-safety:
+    post:
+      operationId: analyzePatientSafety
+      tags: [ai]
+      summary: Run AI safety analysis on prescriptions and records
+      responses:
+        "200":
+          description: Safety analysis result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AiAnalysisResult"
+
+  /ai/analyze-fraud:
+    post:
+      operationId: analyzePatientFraud
+      tags: [ai]
+      summary: Run AI fraud detection on prescription patterns
+      responses:
+        "200":
+          description: Fraud analysis result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AiAnalysisResult"
+
+  /ai/explain-alert/{id}:
+    get:
+      operationId: explainAlert
+      tags: [ai]
+      summary: Get a detailed AI explanation of a specific alert
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Alert explanation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AlertExplanation"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    Patient:
+      type: object
+      required: [id, name, dateOfBirth, encryptionKeyFingerprint, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: ["string", "null"]
+        dateOfBirth:
+          type: string
+        bloodType:
+          type: ["string", "null"]
+        allergies:
+          type: ["string", "null"]
+        emergencyContact:
+          type: ["string", "null"]
+        encryptionKeyFingerprint:
+          type: string
+        publicKey:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    PatientUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        dateOfBirth:
+          type: string
+        bloodType:
+          type: string
+        allergies:
+          type: string
+        emergencyContact:
+          type: string
+
+    DashboardSummary:
+      type: object
+      required: [totalRecords, totalPrescriptions, activeGrants, unresolvedAlerts, criticalAlerts, recentActivity]
+      properties:
+        totalRecords:
+          type: integer
+        totalPrescriptions:
+          type: integer
+        activeGrants:
+          type: integer
+        unresolvedAlerts:
+          type: integer
+        criticalAlerts:
+          type: integer
+        verifiedRecords:
+          type: integer
+        recentActivity:
+          type: array
+          items:
+            $ref: "#/components/schemas/ActivityItem"
+
+    ActivityItem:
+      type: object
+      required: [id, type, description, timestamp]
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+        description:
+          type: string
+        timestamp:
+          type: string
+
+    HealthRecord:
+      type: object
+      required: [id, title, category, encryptedContent, signatureHash, isVerified, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        category:
+          type: string
+        encryptedContent:
+          type: string
+        content:
+          type: ["string", "null"]
+        provider:
+          type: ["string", "null"]
+        recordDate:
+          type: ["string", "null"]
+        signatureHash:
+          type: string
+        isVerified:
+          type: boolean
+        tags:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    HealthRecordInput:
+      type: object
+      required: [title, category, content]
+      properties:
+        title:
+          type: string
+          minLength: 1
+        category:
+          type: string
+        content:
+          type: string
+        provider:
+          type: string
+        recordDate:
+          type: string
+        tags:
+          type: string
+
+    HealthRecordUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        category:
+          type: string
+        content:
+          type: string
+        provider:
+          type: string
+        recordDate:
+          type: string
+        tags:
+          type: string
+
+    SignatureVerification:
+      type: object
+      required: [recordId, isValid, signatureHash, verifiedAt]
+      properties:
+        recordId:
+          type: integer
+        isValid:
+          type: boolean
+        signatureHash:
+          type: string
+        algorithm:
+          type: string
+        verifiedAt:
+          type: string
+        message:
+          type: ["string", "null"]
+
+    Prescription:
+      type: object
+      required: [id, medicationName, dosage, frequency, prescribedBy, prescribedAt, status, signatureHash, createdAt]
+      properties:
+        id:
+          type: integer
+        medicationName:
+          type: string
+        dosage:
+          type: string
+        frequency:
+          type: string
+        prescribedBy:
+          type: string
+        prescribedAt:
+          type: string
+        expiresAt:
+          type: ["string", "null"]
+        refillsRemaining:
+          type: ["integer", "null"]
+        instructions:
+          type: ["string", "null"]
+        pharmacyName:
+          type: ["string", "null"]
+        npiNumber:
+          type: ["string", "null"]
+        status:
+          type: string
+        signatureHash:
+          type: string
+        createdAt:
+          type: string
+
+    PrescriptionInput:
+      type: object
+      required: [medicationName, dosage, frequency, prescribedBy, prescribedAt]
+      properties:
+        medicationName:
+          type: string
+          minLength: 1
+        dosage:
+          type: string
+        frequency:
+          type: string
+        prescribedBy:
+          type: string
+        prescribedAt:
+          type: string
+        expiresAt:
+          type: string
+        refillsRemaining:
+          type: integer
+        instructions:
+          type: string
+        pharmacyName:
+          type: string
+        npiNumber:
+          type: string
+
+    PrescriptionUpdate:
+      type: object
+      properties:
+        medicationName:
+          type: string
+        dosage:
+          type: string
+        frequency:
+          type: string
+        prescribedBy:
+          type: string
+        prescribedAt:
+          type: string
+        expiresAt:
+          type: string
+        refillsRemaining:
+          type: integer
+        instructions:
+          type: string
+        pharmacyName:
+          type: string
+        npiNumber:
+          type: string
+        status:
+          type: string
+
+    AccessGrant:
+      type: object
+      required: [id, providerName, providerType, grantedAt, recordScope, signatureHash, isActive, accessCount]
+      properties:
+        id:
+          type: integer
+        providerName:
+          type: string
+        providerType:
+          type: string
+        providerEmail:
+          type: ["string", "null"]
+        grantedAt:
+          type: string
+        expiresAt:
+          type: ["string", "null"]
+        recordScope:
+          type: string
+        signatureHash:
+          type: string
+        isActive:
+          type: boolean
+        lastAccessedAt:
+          type: ["string", "null"]
+        accessCount:
+          type: integer
+
+    AccessGrantInput:
+      type: object
+      required: [providerName, providerType, recordScope]
+      properties:
+        providerName:
+          type: string
+          minLength: 1
+        providerType:
+          type: string
+        providerEmail:
+          type: string
+        expiresAt:
+          type: string
+        recordScope:
+          type: string
+
+    AuditEntry:
+      type: object
+      required: [id, grantId, action, timestamp]
+      properties:
+        id:
+          type: integer
+        grantId:
+          type: integer
+        action:
+          type: string
+        ipAddress:
+          type: ["string", "null"]
+        userAgent:
+          type: ["string", "null"]
+        timestamp:
+          type: string
+
+    Alert:
+      type: object
+      required: [id, type, severity, title, description, isDismissed, createdAt]
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+        severity:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        relatedIds:
+          type: ["string", "null"]
+        isDismissed:
+          type: boolean
+        createdAt:
+          type: string
+        dismissedAt:
+          type: ["string", "null"]
+
+    AiAnalysisResult:
+      type: object
+      required: [success, alertsCreated, summary]
+      properties:
+        success:
+          type: boolean
+        alertsCreated:
+          type: integer
+        summary:
+          type: string
+        details:
+          type: ["string", "null"]
+
+    AlertExplanation:
+      type: object
+      required: [alertId, explanation, recommendations]
+      properties:
+        alertId:
+          type: integer
+        explanation:
+          type: string
+        recommendations:
+          type: string
+        sources:
+          type: ["string", "null"]
