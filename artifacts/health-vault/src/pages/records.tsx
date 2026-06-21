@@ -74,6 +74,7 @@ export default function Records() {
   const { data: records = [], isLoading } = useListRecords(params, {
     query: { queryKey: getListRecordsQueryKey(params) },
   });
+  const recordList = Array.isArray(records) ? records : [];
   const deleteRecord = useDeleteRecord();
 
   function handleDelete(id: number) {
@@ -156,7 +157,7 @@ export default function Records() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {records.map((r) => (
+              {recordList.map((r) => (
                 <TableRow key={r.id}>
                   <TableCell className="font-medium">{r.title}</TableCell>
                   <TableCell>

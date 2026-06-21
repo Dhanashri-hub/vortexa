@@ -72,7 +72,7 @@ export default function RecordDetail() {
           <Card>
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-2">
-                {verification?.isVerified ? (
+                {verification?.isValid ? (
                   <ShieldCheck className="w-4 h-4 text-green-500" />
                 ) : (
                   <ShieldX className="w-4 h-4 text-destructive" />
@@ -84,12 +84,12 @@ export default function RecordDetail() {
               <Badge
                 variant="outline"
                 className={
-                  verification?.isVerified
+                  verification?.isValid
                     ? "border-green-500/30 bg-green-500/10 text-green-400"
                     : "border-destructive/30 bg-destructive/10 text-destructive"
                 }
               >
-                {verification?.isVerified ? "Verified" : "Failed"}
+                {verification?.isValid ? "Verified" : "Failed"}
               </Badge>
               <p className="text-xs text-muted-foreground font-mono break-all">
                 {record.signatureHash}

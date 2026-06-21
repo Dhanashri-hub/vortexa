@@ -13,6 +13,7 @@ import AccessGrants from "@/pages/access-grants";
 import AuditTrail from "@/pages/audit-trail";
 import Alerts from "@/pages/alerts";
 import Settings from "@/pages/settings";
+import Assistant from "@/pages/assistant";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,6 +36,7 @@ function Router() {
         <Route path="/access-grants" component={AccessGrants} />
         <Route path="/access-grants/:id/audit" component={AuditTrail} />
         <Route path="/alerts" component={Alerts} />
+        <Route path="/assistant" component={Assistant} />
         <Route path="/settings" component={Settings} />
         <Route component={NotFound} />
       </Switch>

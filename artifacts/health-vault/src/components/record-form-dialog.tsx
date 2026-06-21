@@ -54,10 +54,7 @@ export default function RecordFormDialog({ open, onOpenChange, onSuccess }: Prop
     e.preventDefault();
     createRecord.mutate(
       {
-        data: {
-          ...form,
-          tags: form.tags ? form.tags.split(",").map((t) => t.trim()) : [],
-        },
+        data: form,
       },
       {
         onSuccess: () => {

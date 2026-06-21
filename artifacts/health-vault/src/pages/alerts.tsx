@@ -81,12 +81,13 @@ export default function Alerts() {
   const { data: alerts = [], isLoading } = useListAlerts(params, {
     query: { queryKey: getListAlertsQueryKey(params) },
   });
+  const alertList = Array.isArray(alerts) ? alerts : [];
   const dismissAlert = useDismissAlert();
   const analyzeSafety = useAnalyzePatientSafety();
   const analyzeFraud = useAnalyzePatientFraud();
 
-  const undismissed = alerts.filter((a) => !a.isDismissed);
-  const dismissed = alerts.filter((a) => a.isDismissed);
+  const undismissed = alertList.filter((a) => !a.isDismissed);
+  const dismissed = alertList.filter((a) => a.isDismissed);
 
   function handleDismiss(id: number) {
     dismissAlert.mutate(
@@ -245,7 +246,7 @@ function AlertCard({
   onExplain,
   dismissed = false,
 }: {
-  alert: { id: number; type: string; severity: string; title: string; description: string; relatedIds: string[] };
+  alert: { id: number; type: string; severity: string; title: string; description: string; relatedIds?: string | null };
   onDismiss?: () => void;
   onExplain?: () => void;
   dismissed?: boolean;

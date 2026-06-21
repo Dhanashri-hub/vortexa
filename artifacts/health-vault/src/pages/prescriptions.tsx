@@ -54,6 +54,7 @@ export default function Prescriptions() {
   const { data: prescriptions = [], isLoading } = useListPrescriptions(params, {
     query: { queryKey: getListPrescriptionsQueryKey(params) },
   });
+  const prescriptionList = Array.isArray(prescriptions) ? prescriptions : [];
   const deletePrescription = useDeletePrescription();
 
   function handleDelete(id: number) {
@@ -127,7 +128,7 @@ export default function Prescriptions() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {prescriptions.map((p) => (
+              {prescriptionList.map((p) => (
                 <TableRow key={p.id}>
                   <TableCell className="font-medium">{p.medicationName}</TableCell>
                   <TableCell className="text-muted-foreground text-sm">

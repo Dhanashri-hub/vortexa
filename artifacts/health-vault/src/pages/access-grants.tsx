@@ -32,6 +32,7 @@ export default function AccessGrants() {
   const { data: grants = [], isLoading } = useListAccessGrants({
     query: { queryKey: getListAccessGrantsQueryKey() },
   });
+  const grantList = Array.isArray(grants) ? grants : [];
   const revokeGrant = useRevokeAccessGrant();
 
   function handleRevoke(id: number) {
@@ -72,13 +73,13 @@ export default function AccessGrants() {
             <div key={i} className="h-40 bg-muted rounded-lg animate-pulse" />
           ))}
         </div>
-      ) : grants.length === 0 ? (
+      ) : grantList.length === 0 ? (
         <div className="text-center py-16 text-muted-foreground border rounded-lg border-dashed">
           No active access grants. Grant a provider access to your records.
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {grants.map((g) => (
+          {grantList.map((g) => (
             <Card key={g.id} className="flex flex-col">
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">

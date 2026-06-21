@@ -44,7 +44,6 @@ export default function PrescriptionFormDialog({ open, onOpenChange, onSuccess }
         data: {
           ...form,
           refillsRemaining: form.refillsRemaining ? Number(form.refillsRemaining) : undefined,
-          status: "active",
         },
       },
       {

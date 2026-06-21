@@ -12,6 +12,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
     { href: "/prescriptions", label: "Prescriptions", icon: Pill },
     { href: "/access-grants", label: "Access Grants", icon: Key },
     { href: "/alerts", label: "Security Alerts", icon: ShieldAlert },
+    { href: "/assistant", label: "Health Assistant", icon: User },
     { href: "/settings", label: "Settings", icon: Settings },
   ];
 

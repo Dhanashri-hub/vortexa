@@ -7,6 +7,7 @@ import accessGrantsRouter from "./access-grants";
 import alertsRouter from "./alerts";
 import dashboardRouter from "./dashboard";
 import aiRouter from "./ai";
+import assistantRouter from "./assistant";
 
 const router: IRouter = Router();
 
@@ -18,5 +19,6 @@ router.use(accessGrantsRouter);
 router.use(alertsRouter);
 router.use(dashboardRouter);
 router.use(aiRouter);
+router.use(assistantRouter);
 
 export default router;

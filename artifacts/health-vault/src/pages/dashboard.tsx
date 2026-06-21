@@ -65,7 +65,8 @@ export default function Dashboard() {
   const { data: summary, isLoading: isSummaryLoading } = useGetDashboardSummary();
   const { data: alerts, isLoading: isAlertsLoading } = useListAlerts({ severity: 'critical' });
 
-  const criticalAlerts = alerts?.filter(a => !a.isDismissed && a.severity === 'critical') || [];
+  const alertList = Array.isArray(alerts) ? alerts : [];
+  const criticalAlerts = alertList.filter(a => !a.isDismissed && a.severity === 'critical');
 
   if (isSummaryLoading || isAlertsLoading) {
     return <div className="space-y-4 animate-pulse">
